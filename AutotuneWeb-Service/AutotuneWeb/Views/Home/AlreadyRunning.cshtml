@@ -1,0 +1,40 @@
+﻿@model  Job
+
+@{
+    if (ViewBag.JobStarted == null)
+    {
+        ViewBag.Title = "Already Queued";
+    }
+    else
+    {
+        ViewBag.Title = "Already Running";
+    }
+}
+<h2>@ViewBag.Title</h2>
+
+@if (ViewBag.JobStarted == null)
+{
+    var queuePos = (int)ViewBag.QueuePos;
+
+    if (queuePos <= 1)
+    {
+        <p>Your job is the only one in the queue, it should start processing very soon.</p>
+    }
+    else
+    {
+        <p>There are now <span style="font-size: 2em">@queuePos</span> jobs waiting to be processed (including yours).</p>
+    }
+}
+else
+{
+    var jobStarted = (DateTime)ViewBag.JobStarted;
+    var runtime = (DateTime.UtcNow - jobStarted).TotalMinutes.ToString("0");
+    <p>
+        Your job is already running. It started at @(jobStarted.ToString("HH:mm")) UTC, and has been running for @runtime
+        @(runtime == "1" ? "minute" : "minutes").
+    </p>
+}
+
+<p>Please be patient and you will get your results by email as soon as it is complete.</p>
+
+<code>@Model.PartitionKey-@Model.RowKey</code>
